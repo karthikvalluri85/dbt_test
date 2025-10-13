@@ -21,7 +21,7 @@ with raw_meetings as (
         load_timestamp as raw_load_timestamp,
         update_timestamp as raw_update_timestamp,
         source_system as raw_source_system
-    from {{ source('zoom_raw', 'meetings') }}
+    from {{ source('zoom_raw_schema', 'meetings') }}
     where meeting_id is not null  -- Basic data quality check
 ),
 
