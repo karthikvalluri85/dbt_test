@@ -20,7 +20,7 @@ with raw_licenses as (
         load_timestamp as raw_load_timestamp,
         update_timestamp as raw_update_timestamp,
         source_system as raw_source_system
-    from {{ source('zoom_raw', 'licenses') }}
+    from {{ source('zoom_raw_schema', 'licenses') }}
     where license_id is not null  -- Basic data quality check
 ),
 
