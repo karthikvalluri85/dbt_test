@@ -20,7 +20,7 @@ with raw_billing_events as (
         load_timestamp as raw_load_timestamp,
         update_timestamp as raw_update_timestamp,
         source_system as raw_source_system
-    from {{ source('zoom_raw', 'billing_events') }}
+    from {{ source('zoom_raw_schema', 'billing_events') }}
     where event_id is not null  -- Basic data quality check
 ),
 
