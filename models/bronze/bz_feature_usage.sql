@@ -20,7 +20,7 @@ with raw_feature_usage as (
         load_timestamp as raw_load_timestamp,
         update_timestamp as raw_update_timestamp,
         source_system as raw_source_system
-    from {{ source('zoom_raw', 'feature_usage') }}
+    from {{ source('zoom_raw_schema', 'feature_usage') }}
     where usage_id is not null  -- Basic data quality check
 ),
 
