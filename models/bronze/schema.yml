@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: zoom_raw
+  - name: zoom_raw_schema
     description: "Raw data from Zoom platform containing unprocessed data from various sources"
     tables:
       - name: users
