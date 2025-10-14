@@ -20,5 +20,4 @@ models:
   Analytics_Project:
     bronze:
       +materialized: table
-      +on_run_start: "{{ log('Starting bronze layer transformation', info=true) }}"
-      +on_run_end: "{{ log('Completed bronze layer transformation', info=true) }}"
+      +on_schema_change: "fail"
