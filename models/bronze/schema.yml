@@ -3,6 +3,8 @@ version: 2
 sources:
   - name: zoom_raw
     description: "Raw Zoom data from source systems"
+    database: ZOOM_DATABASE
+    schema: ZOOM_RAW_SCHEMA
     tables:
       - name: meetings
         description: "Raw meetings data from Zoom platform"
