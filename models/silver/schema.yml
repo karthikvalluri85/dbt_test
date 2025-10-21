@@ -173,3 +173,84 @@ models:
         description: "License end date"
         tests:
           - not_null
+          
+  - name: si_support_tickets
+    description: "Silver layer cleaned support ticket data"
+    columns:
+      - name: ticket_id
+        description: "Unique ticket identifier"
+        tests:
+          - unique
+          - not_null
+      - name: resolution_status
+        description: "Standardized resolution status"
+        tests:
+          - not_null
+      - name: ticket_type
+        description: "Standardized ticket type"
+        tests:
+          - not_null
+          
+  - name: si_billing_events
+    description: "Silver layer cleaned billing event data"
+    columns:
+      - name: billing_event_id
+        description: "Unique billing event identifier"
+        tests:
+          - unique
+          - not_null
+      - name: amount
+        description: "Validated billing amount"
+        tests:
+          - not_null
+      - name: event_type
+        description: "Standardized event type"
+        tests:
+          - not_null
+          
+  - name: si_participants
+    description: "Silver layer cleaned participant data"
+    columns:
+      - name: participant_id
+        description: "Unique participant identifier"
+        tests:
+          - unique
+          - not_null
+      - name: join_time
+        description: "Participant join timestamp"
+        tests:
+          - not_null
+          
+  - name: si_webinars
+    description: "Silver layer cleaned webinar data"
+    columns:
+      - name: webinar_id
+        description: "Unique webinar identifier"
+        tests:
+          - unique
+          - not_null
+      - name: webinar_topic
+        description: "Cleaned webinar topic"
+        tests:
+          - not_null
+      - name: registrants
+        description: "Number of registrants"
+        tests:
+          - not_null
+              
+  - name: si_feature_usage
+    description: "Silver layer cleaned feature usage data"
+    columns:
+      - name: feature_usage_id
+        description: "Unique feature usage identifier"
+        tests:
+          - unique
+          - not_null
+      - name: feature_name
+        description: "Standardized feature name"
+        tests:
+          - not_null
+      - name: usage_count
+        description: "Feature usage count"
+        tests:
+          - not_null
