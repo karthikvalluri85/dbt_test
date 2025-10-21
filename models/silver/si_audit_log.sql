@@ -8,7 +8,7 @@
 -- Audit log table for tracking all silver layer transformations
 WITH audit_base AS (
   SELECT
-    {{ dbt_utils.generate_surrogate_key(['invocation_id', 'current_timestamp()']) }} AS audit_id,
+    {{ dbt_utils.generate_surrogate_key(['current_timestamp()']) }} AS audit_id,
     'INITIAL_LOAD' AS pipeline_name,
     CURRENT_TIMESTAMP() AS execution_start_time,
     CURRENT_TIMESTAMP() AS execution_end_time,
