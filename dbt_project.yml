@@ -2,10 +2,8 @@ name: 'Analytics_Project'
 version: '1.0.0'
 config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
 profile: 'Analytics_Project'
 
-# These configurations specify where dbt should look for different types of files.
 model-paths: ["models"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
@@ -18,14 +16,17 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
-# Configuring models
 models:
   Analytics_Project:
-    # Config indicated by + and applies to all files under models/example/
     bronze:
       +materialized: table
-      +on_schema_change: "fail"
+    silver:
+      +materialized: incremental
+      +on_schema_change: sync_all_columns
+      +unique_key: "id"
+    gold:
+      +materialized: table
 
 vars:
-  source_schema: 'ZOOM_RAW_SCHEMA'
-  target_schema: 'ZOOM_BRONZE_SCHEMA'
+  source_schema: "ZOOM_BRONZE_SCHEMA"
+  target_schema: "ZOOM_SILVER_SCHEMA"
