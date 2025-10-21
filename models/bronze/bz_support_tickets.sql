@@ -28,7 +28,7 @@ WITH source_data AS (
         source_system,
         load_timestamp,
         update_timestamp
-    FROM {{ source('zoom_raw', 'support_tickets') }}
+    FROM {{ source('zoom_raw_schema', 'support_tickets') }}
     WHERE ticket_id IS NOT NULL  -- Basic data quality check
 ),
 
