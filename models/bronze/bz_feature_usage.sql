@@ -28,7 +28,7 @@ WITH source_data AS (
         source_system,
         load_timestamp,
         update_timestamp
-    FROM {{ source('zoom_raw', 'feature_usage') }}
+    FROM {{ source('zoom_raw_schema', 'feature_usage') }}
     WHERE usage_id IS NOT NULL  -- Basic data quality check
 ),
 
