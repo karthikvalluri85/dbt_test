@@ -20,15 +20,15 @@ WITH bronze_meetings AS (
       AND start_time IS NOT NULL
       AND end_time IS NOT NULL
       AND end_time > start_time
-      AND duration_minutes >= 0
-      AND duration_minutes <= 2880 -- Max 48 hours
+      AND COALESCE(duration_minutes, 0) >= 0
+      AND COALESCE(duration_minutes, 0) <= 2880 -- Max 48 hours
 ),
 
 deduped_meetings AS (
     SELECT *,
         ROW_NUMBER() OVER (
             PARTITION BY meeting_topic, start_time, end_time 
-            ORDER BY update_timestamp DESC, load_timestamp DESC
+            ORDER BY COALESCE(update_timestamp, load_timestamp) DESC
         ) AS row_num
     FROM bronze_meetings
 ),
