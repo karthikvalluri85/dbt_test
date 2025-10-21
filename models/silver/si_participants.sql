@@ -21,7 +21,7 @@ WITH bronze_participants AS (
 deduped_participants AS (
     SELECT *,
         ROW_NUMBER() OVER (
-            PARTITION BY join_time, COALESCE(leave_time, '9999-12-31')
+            PARTITION BY join_time, COALESCE(leave_time, TIMESTAMP '9999-12-31 00:00:00')
             ORDER BY COALESCE(update_timestamp, load_timestamp) DESC
         ) AS row_num
     FROM bronze_participants
@@ -29,7 +29,7 @@ deduped_participants AS (
 
 transformed_participants AS (
     SELECT 
-        {{ dbt_utils.generate_surrogate_key(['join_time', 'coalesce(leave_time, "9999-12-31")']) }} AS participant_id,
+        {{ dbt_utils.generate_surrogate_key(['join_time', 'coalesce(leave_time, timestamp "9999-12-31 00:00:00")']) }} AS participant_id,
         leave_time,
         join_time,
         CURRENT_DATE() AS load_date,
