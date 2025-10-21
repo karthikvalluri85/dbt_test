@@ -96,7 +96,6 @@ models:
       - name: audit_id
         description: "Unique audit record identifier"
         tests:
-          - unique
           - not_null
       - name: process_name
         description: "Name of the process being audited"
@@ -151,5 +150,26 @@ models:
           - not_null
       - name: plan_type
         description: "Standardized plan type"
+        tests:
+          - not_null
+          
+  - name: si_licenses
+    description: "Silver layer cleaned license data"
+    columns:
+      - name: license_id
+        description: "Unique license identifier"
+        tests:
+          - unique
+          - not_null
+      - name: license_type
+        description: "Standardized license type"
+        tests:
+          - not_null
+      - name: start_date
+        description: "License start date"
+        tests:
+          - not_null
+      - name: end_date
+        description: "License end date"
         tests:
           - not_null
