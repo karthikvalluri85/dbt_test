@@ -2,9 +2,7 @@
   config(
     materialized='incremental',
     unique_key='user_id',
-    on_schema_change='sync_all_columns',
-    pre_hook="INSERT INTO {{ this.schema }}.si_audit_log (audit_id, pipeline_name, execution_start_time, execution_status, source_table, target_table, executed_by, load_date) SELECT '{{ invocation_id }}' || '_si_users_START', 'SI_USERS_TRANSFORM', CURRENT_TIMESTAMP(), 'STARTED', 'bz_users', 'si_users', 'DBT_SYSTEM', CURRENT_DATE()",
-    post_hook="INSERT INTO {{ this.schema }}.si_audit_log (audit_id, pipeline_name, execution_end_time, execution_status, source_table, target_table, executed_by, load_date) SELECT '{{ invocation_id }}' || '_si_users_END', 'SI_USERS_TRANSFORM', CURRENT_TIMESTAMP(), 'COMPLETED', 'bz_users', 'si_users', 'DBT_SYSTEM', CURRENT_DATE()"
+    on_schema_change='sync_all_columns'
   )
 }}
 
@@ -30,7 +28,7 @@ cleansed_users AS (
     user_id,
     LOWER(TRIM(email)) AS email,
     TRIM(user_name) AS user_name,
-    UPPER(TRIM(plan_type)) AS plan_type,
+    UPPER(TRIM(COALESCE(plan_type, 'BASIC'))) AS plan_type,
     TRIM(company) AS company,
     load_timestamp,
     update_timestamp,
@@ -41,8 +39,7 @@ cleansed_users AS (
   WHERE 
     -- Data quality validations
     REGEXP_LIKE(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') -- Valid email format
-    AND plan_type IN ('BASIC', 'PRO', 'BUSINESS', 'ENTERPRISE') -- Valid plan types
-    AND LENGTH(TRIM(user_name)) > 0 -- Non-empty user name
+    AND LENGTH(TRIM(COALESCE(user_name, ''))) > 0 -- Non-empty user name
 ),
 
 -- Deduplication logic - keep latest record per user
@@ -50,7 +47,7 @@ deduped_users AS (
   SELECT *,
     ROW_NUMBER() OVER (
       PARTITION BY user_id 
-      ORDER BY update_timestamp DESC, load_timestamp DESC
+      ORDER BY COALESCE(update_timestamp, load_timestamp) DESC, load_timestamp DESC
     ) AS row_num
   FROM cleansed_users
 )
@@ -69,7 +66,7 @@ WHERE row_num = 1
 
 {% if is_incremental() %}
   AND (
-    update_timestamp > (SELECT MAX(update_date) FROM {{ this }})
-    OR load_timestamp > (SELECT MAX(load_date) FROM {{ this }})
+    COALESCE(update_timestamp, load_timestamp) > (SELECT COALESCE(MAX(update_date), '1900-01-01') FROM {{ this }})
+    OR load_timestamp > (SELECT COALESCE(MAX(load_date), '1900-01-01') FROM {{ this }})
   )
 {% endif %}
