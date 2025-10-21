@@ -1,10 +1,7 @@
 {{
   config(
-    materialized='incremental',
-    unique_key='audit_id',
-    on_schema_change='sync_all_columns',
-    pre_hook="INSERT INTO {{ this.schema }}.si_audit_log (audit_id, pipeline_name, execution_start_time, execution_status, source_table, target_table, executed_by, load_date) SELECT '{{ invocation_id }}' || '_START', 'SILVER_PIPELINE', CURRENT_TIMESTAMP(), 'STARTED', 'BRONZE_LAYER', 'SILVER_LAYER', 'DBT_SYSTEM', CURRENT_DATE() WHERE '{{ this.name }}' != 'si_audit_log'",
-    post_hook="INSERT INTO {{ this.schema }}.si_audit_log (audit_id, pipeline_name, execution_end_time, execution_status, source_table, target_table, executed_by, load_date) SELECT '{{ invocation_id }}' || '_END', 'SILVER_PIPELINE', CURRENT_TIMESTAMP(), 'COMPLETED', 'BRONZE_LAYER', 'SILVER_LAYER', 'DBT_SYSTEM', CURRENT_DATE() WHERE '{{ this.name }}' != 'si_audit_log'"
+    materialized='table',
+    on_schema_change='sync_all_columns'
   )
 }}
 
@@ -35,7 +32,3 @@ WITH audit_base AS (
 )
 
 SELECT * FROM audit_base
-
-{% if is_incremental() %}
-  WHERE execution_start_time > (SELECT MAX(execution_start_time) FROM {{ this }})
-{% endif %}
