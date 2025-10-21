@@ -17,7 +17,6 @@ WITH bronze_users AS (
         source_system
     FROM {{ source('bronze', 'bz_users') }}
     WHERE email IS NOT NULL
-      AND REGEXP_LIKE(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')
       AND user_name IS NOT NULL
       AND plan_type IS NOT NULL
 ),
@@ -26,7 +25,7 @@ deduped_users AS (
     SELECT *,
         ROW_NUMBER() OVER (
             PARTITION BY LOWER(TRIM(email))
-            ORDER BY update_timestamp DESC, load_timestamp DESC
+            ORDER BY COALESCE(update_timestamp, load_timestamp) DESC
         ) AS row_num
     FROM bronze_users
 ),
