@@ -3,14 +3,13 @@ version: 2
 sources:
   - name: zoom_bronze
     description: "Bronze layer tables from Zoom platform data"
+    schema: ZOOM_BRONZE_SCHEMA
     tables:
       - name: bz_users
         description: "Bronze layer user data"
         columns:
           - name: email
             description: "User email address"
-            tests:
-              - not_null
           - name: user_name
             description: "User display name"
           - name: plan_type
@@ -35,8 +34,102 @@ sources:
             description: "Meeting end timestamp"
           - name: start_time
             description: "Meeting start timestamp"
-            tests:
-              - not_null
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_licenses
+        description: "Bronze layer license data"
+        columns:
+          - name: license_type
+            description: "Type of license"
+          - name: end_date
+            description: "License end date"
+          - name: start_date
+            description: "License start date"
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_support_tickets
+        description: "Bronze layer support ticket data"
+        columns:
+          - name: resolution_status
+            description: "Ticket resolution status"
+          - name: open_date
+            description: "Ticket open date"
+          - name: ticket_type
+            description: "Type of support ticket"
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_billing_events
+        description: "Bronze layer billing event data"
+        columns:
+          - name: amount
+            description: "Billing amount"
+          - name: event_type
+            description: "Type of billing event"
+          - name: event_date
+            description: "Billing event date"
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_participants
+        description: "Bronze layer participant data"
+        columns:
+          - name: leave_time
+            description: "Participant leave timestamp"
+          - name: join_time
+            description: "Participant join timestamp"
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_webinars
+        description: "Bronze layer webinar data"
+        columns:
+          - name: end_time
+            description: "Webinar end timestamp"
+          - name: webinar_topic
+            description: "Webinar topic or title"
+          - name: start_time
+            description: "Webinar start timestamp"
+          - name: registrants
+            description: "Number of webinar registrants"
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_feature_usage
+        description: "Bronze layer feature usage data"
+        columns:
+          - name: feature_name
+            description: "Name of the feature used"
+          - name: usage_date
+            description: "Date of feature usage"
+          - name: usage_count
+            description: "Number of times feature was used"
           - name: load_timestamp
             description: "Record load timestamp"
           - name: update_timestamp
@@ -123,10 +216,173 @@ models:
           - not_null
       - name: end_time
         description: "Meeting end timestamp"
+      - name: start_time
+        description: "Meeting start timestamp"
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_licenses
+    description: "Silver layer cleansed license data"
+    columns:
+      - name: license_id
+        description: "Unique identifier for license"
+        tests:
+          - not_null
+          - unique
+      - name: license_type
+        description: "Type of license (standardized)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['BASIC', 'PRO', 'ENTERPRISE']
+      - name: end_date
+        description: "License end date"
+      - name: start_date
+        description: "License start date"
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_support_tickets
+    description: "Silver layer cleansed support ticket data"
+    columns:
+      - name: ticket_id
+        description: "Unique identifier for support ticket"
+        tests:
+          - not_null
+          - unique
+      - name: resolution_status
+        description: "Ticket resolution status (standardized)"
+        tests:
+          - accepted_values:
+              values: ['OPEN', 'IN PROGRESS', 'RESOLVED', 'CLOSED']
+      - name: open_date
+        description: "Ticket open date"
+        tests:
+          - not_null
+      - name: ticket_type
+        description: "Type of support ticket (standardized)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['TECHNICAL', 'BILLING', 'GENERAL']
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_billing_events
+    description: "Silver layer cleansed billing event data"
+    columns:
+      - name: billing_event_id
+        description: "Unique identifier for billing event"
+        tests:
+          - not_null
+          - unique
+      - name: amount
+        description: "Billing amount (validated and rounded)"
+        tests:
+          - not_null
+      - name: event_type
+        description: "Type of billing event (standardized)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['CHARGE', 'REFUND', 'CREDIT', 'PAYMENT']
+      - name: event_date
+        description: "Billing event date"
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_participants
+    description: "Silver layer cleansed participant data"
+    columns:
+      - name: participant_id
+        description: "Unique identifier for participant"
+        tests:
+          - not_null
+          - unique
+      - name: leave_time
+        description: "Participant leave timestamp"
+      - name: join_time
+        description: "Participant join timestamp"
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_webinars
+    description: "Silver layer cleansed webinar data"
+    columns:
+      - name: webinar_id
+        description: "Unique identifier for webinar"
+        tests:
+          - not_null
+          - unique
+      - name: end_time
+        description: "Webinar end timestamp"
+      - name: webinar_topic
+        description: "Webinar topic or title (trimmed)"
         tests:
           - not_null
       - name: start_time
-        description: "Meeting start timestamp"
+        description: "Webinar start timestamp"
+        tests:
+          - not_null
+      - name: registrants
+        description: "Number of webinar registrants (validated)"
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_feature_usage
+    description: "Silver layer cleansed feature usage data"
+    columns:
+      - name: feature_usage_id
+        description: "Unique identifier for feature usage record"
+        tests:
+          - not_null
+          - unique
+      - name: feature_name
+        description: "Name of the feature used (standardized)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SCREEN SHARE', 'RECORDING', 'CHAT', 'BREAKOUT ROOMS']
+      - name: usage_date
+        description: "Date of feature usage"
+        tests:
+          - not_null
+      - name: usage_count
+        description: "Number of times feature was used (validated)"
         tests:
           - not_null
       - name: load_date
