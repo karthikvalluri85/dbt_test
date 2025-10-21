@@ -29,7 +29,7 @@ WITH source_data AS (
         source_system,
         load_timestamp,
         update_timestamp
-    FROM {{ source('zoom_raw', 'meetings') }}
+    FROM {{ source('zoom_raw_schema', 'meetings') }}
     WHERE meeting_id IS NOT NULL  -- Basic data quality check
 ),
 
