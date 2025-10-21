@@ -1,0 +1,137 @@
+version: 2
+
+sources:
+  - name: zoom_bronze
+    description: "Bronze layer tables from Zoom platform data"
+    tables:
+      - name: bz_users
+        description: "Bronze layer user data"
+        columns:
+          - name: email
+            description: "User email address"
+            tests:
+              - not_null
+          - name: user_name
+            description: "User display name"
+          - name: plan_type
+            description: "User subscription plan"
+          - name: company
+            description: "User company"
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+            
+      - name: bz_meetings
+        description: "Bronze layer meeting data"
+        columns:
+          - name: meeting_topic
+            description: "Meeting topic or title"
+          - name: duration_minutes
+            description: "Meeting duration in minutes"
+          - name: end_time
+            description: "Meeting end timestamp"
+          - name: start_time
+            description: "Meeting start timestamp"
+            tests:
+              - not_null
+          - name: load_timestamp
+            description: "Record load timestamp"
+          - name: update_timestamp
+            description: "Record update timestamp"
+          - name: source_system
+            description: "Source system identifier"
+
+models:
+  - name: si_audit_log
+    description: "Silver layer audit log for tracking pipeline execution"
+    columns:
+      - name: audit_id
+        description: "Unique identifier for audit record"
+        tests:
+          - not_null
+          - unique
+      - name: pipeline_name
+        description: "Name of the executed pipeline"
+        tests:
+          - not_null
+      - name: execution_start_time
+        description: "Pipeline execution start timestamp"
+      - name: execution_end_time
+        description: "Pipeline execution end timestamp"
+      - name: execution_status
+        description: "Pipeline execution status"
+        tests:
+          - accepted_values:
+              values: ['SUCCESS', 'FAILED', 'STARTED', 'COMPLETED']
+      - name: source_system
+        description: "Source system identifier"
+      - name: target_table
+        description: "Target table name"
+      - name: executed_by
+        description: "System or user that executed the pipeline"
+      - name: load_date
+        description: "Date when record was loaded"
+      - name: update_date
+        description: "Date when record was updated"
+        
+  - name: si_users
+    description: "Silver layer cleansed user data"
+    columns:
+      - name: user_id
+        description: "Unique identifier for user"
+        tests:
+          - not_null
+          - unique
+      - name: email
+        description: "User email address (cleansed and validated)"
+        tests:
+          - not_null
+      - name: user_name
+        description: "User display name (trimmed)"
+      - name: plan_type
+        description: "User subscription plan (standardized)"
+        tests:
+          - accepted_values:
+              values: ['BASIC', 'PRO', 'BUSINESS', 'ENTERPRISE']
+      - name: company
+        description: "User company (trimmed)"
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
+        
+  - name: si_meetings
+    description: "Silver layer cleansed meeting data"
+    columns:
+      - name: meeting_id
+        description: "Unique identifier for meeting"
+        tests:
+          - not_null
+          - unique
+      - name: meeting_topic
+        description: "Meeting topic or title (trimmed)"
+        tests:
+          - not_null
+      - name: duration_minutes
+        description: "Meeting duration in minutes (validated)"
+        tests:
+          - not_null
+      - name: end_time
+        description: "Meeting end timestamp"
+        tests:
+          - not_null
+      - name: start_time
+        description: "Meeting start timestamp"
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when record was loaded into silver layer"
+      - name: update_date
+        description: "Date when record was updated in silver layer"
+      - name: source_system
+        description: "Source system identifier"
