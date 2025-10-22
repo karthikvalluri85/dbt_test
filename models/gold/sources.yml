@@ -1,0 +1,154 @@
+version: 2
+
+sources:
+  - name: zoom_silver
+    description: 'Silver layer tables from Zoom Platform Analytics System'
+    schema: ZOOM_SILVER_SCHEMA
+    tables:
+      - name: si_meetings
+        description: 'Cleaned and standardized meeting information'
+        columns:
+          - name: meeting_id
+            description: 'Unique identifier for each meeting record'
+          - name: meeting_topic
+            description: 'Subject or descriptive title of the meeting session'
+          - name: duration_minutes
+            description: 'Total duration of the meeting measured in minutes'
+          - name: start_time
+            description: 'Timestamp indicating when the meeting began'
+          - name: end_time
+            description: 'Timestamp indicating when the meeting concluded'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_users
+        description: 'Cleaned and validated user profile information'
+        columns:
+          - name: user_id
+            description: 'Unique identifier for each user record'
+          - name: email
+            description: 'Primary email address associated with the user account'
+          - name: user_name
+            description: 'Display name or username for the platform user'
+          - name: plan_type
+            description: 'Subscription plan tier assigned to the user'
+          - name: company
+            description: 'Organization or company name associated with the user'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_licenses
+        description: 'Validated license assignment and management information'
+        columns:
+          - name: license_id
+            description: 'Unique identifier for each license record'
+          - name: license_type
+            description: 'Category or tier of the license'
+          - name: start_date
+            description: 'Activation date of the license assignment'
+          - name: end_date
+            description: 'Expiration date of the license assignment'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_support_tickets
+        description: 'Cleaned customer support ticket information'
+        columns:
+          - name: ticket_id
+            description: 'Unique identifier for each support ticket record'
+          - name: resolution_status
+            description: 'Current status of the support ticket resolution process'
+          - name: open_date
+            description: 'Date when the support ticket was initially created'
+          - name: ticket_type
+            description: 'Category classification of the support request'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_billing_events
+        description: 'Validated financial transaction and billing information'
+        columns:
+          - name: billing_event_id
+            description: 'Unique identifier for each billing event record'
+          - name: amount
+            description: 'Monetary value associated with the billing transaction'
+          - name: event_type
+            description: 'Classification of the billing event'
+          - name: event_date
+            description: 'Date when the billing event occurred'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_participants
+        description: 'Validated meeting and webinar participation information'
+        columns:
+          - name: participant_id
+            description: 'Unique identifier for each participant record'
+          - name: join_time
+            description: 'Timestamp when the participant entered the session'
+          - name: leave_time
+            description: 'Timestamp when the participant exited the session'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_webinars
+        description: 'Cleaned webinar event and broadcast information'
+        columns:
+          - name: webinar_id
+            description: 'Unique identifier for each webinar record'
+          - name: webinar_topic
+            description: 'Subject or descriptive title of the webinar event'
+          - name: start_time
+            description: 'Timestamp indicating when the webinar began'
+          - name: end_time
+            description: 'Timestamp indicating when the webinar concluded'
+          - name: registrants
+            description: 'Total number of users registered for the webinar'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
+            
+      - name: si_feature_usage
+        description: 'Validated platform feature utilization tracking information'
+        columns:
+          - name: feature_usage_id
+            description: 'Unique identifier for each feature usage record'
+          - name: feature_name
+            description: 'Name of the platform feature being tracked'
+          - name: usage_date
+            description: 'Date when the feature usage occurred'
+          - name: usage_count
+            description: 'Number of times the feature was utilized'
+          - name: load_date
+            description: 'Date when the record was loaded into silver layer'
+          - name: update_date
+            description: 'Date when the record was last modified'
+          - name: source_system
+            description: 'Identifier of the source system'
