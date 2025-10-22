@@ -1,7 +1,5 @@
 {{ config(
-    materialized='table',
-    pre_hook="INSERT INTO {{ this.schema }}.go_process_audit (audit_id, pipeline_run_id, pipeline_name, execution_start_time, execution_status, source_system, target_table, load_date) SELECT UUID_STRING(), '{{ invocation_id }}', 'go_license_dimension', CURRENT_TIMESTAMP(), 'STARTED', 'ZOOM_SILVER', 'go_license_dimension', CURRENT_DATE()",
-    post_hook="UPDATE {{ this.schema }}.go_process_audit SET execution_end_time = CURRENT_TIMESTAMP(), execution_status = 'SUCCESS', execution_duration_seconds = DATEDIFF('second', execution_start_time, CURRENT_TIMESTAMP()), records_processed = (SELECT COUNT(*) FROM {{ this }}), update_date = CURRENT_DATE() WHERE pipeline_run_id = '{{ invocation_id }}' AND target_table = 'go_license_dimension'"
+    materialized='table'
 ) }}
 
 -- License Dimension with SCD Type 2 Implementation
