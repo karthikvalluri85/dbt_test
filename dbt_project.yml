@@ -2,35 +2,30 @@ name: 'Analytics_Project'
 version: '1.0.0'
 config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
 profile: 'Analytics_Project'
 
-# These configurations specify where dbt should look for different types of files.
 model-paths: ["models"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
-seed-paths: ["data"]
+seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
+target-path: "target"
+clean-targets:
   - "target"
   - "dbt_packages"
 
-# Configuring models
 models:
   Analytics_Project:
-    # Config indicated by + and applies to all files under models/example/
-    silver:
-      +materialized: incremental
-      +on_schema_change: sync_all_columns
-      +unique_key: "{{ var('unique_key', 'id') }}"
-    bronze:
+    gold:
       +materialized: table
+      +schema: gold
+      dimensional:
+        +materialized: table
+      fact:
+        +materialized: table
 
 vars:
-  # The `start_date` variable will be accessible in all resources
-  start_date: '2020-01-01'
-  # The `end_date` variable will be accessible in all resources  
-  end_date: '2030-12-31'
+  source_schema: 'ZOOM_SILVER_SCHEMA'
+  target_schema: 'ZOOM_GOLD_SCHEMA'
