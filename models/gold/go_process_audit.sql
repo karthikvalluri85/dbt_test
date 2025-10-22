@@ -1,10 +1,8 @@
 {{ config(
-    materialized='table',
-    pre_hook="INSERT INTO {{ this.schema }}.go_process_audit (audit_id, pipeline_run_id, pipeline_name, execution_start_time, execution_status, source_system, target_table, load_date) SELECT UUID_STRING(), '{{ invocation_id }}', 'go_process_audit_creation', CURRENT_TIMESTAMP(), 'STARTED', 'DBT', 'go_process_audit', CURRENT_DATE() WHERE NOT EXISTS (SELECT 1 FROM {{ this.schema }}.go_process_audit WHERE pipeline_run_id = '{{ invocation_id }}' AND target_table = 'go_process_audit')",
-    post_hook="UPDATE {{ this.schema }}.go_process_audit SET execution_end_time = CURRENT_TIMESTAMP(), execution_status = 'SUCCESS', execution_duration_seconds = DATEDIFF('second', execution_start_time, CURRENT_TIMESTAMP()), update_date = CURRENT_DATE() WHERE pipeline_run_id = '{{ invocation_id }}' AND target_table = 'go_process_audit'"
+    materialized='table'
 ) }}
 
--- Process Audit Table Creation
+-- Process Audit Table Creation - First model to run
 WITH audit_structure AS (
     SELECT 
         UUID_STRING() AS audit_id,
