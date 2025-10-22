@@ -1,0 +1,122 @@
+version: 2
+
+models:
+  - name: go_process_audit
+    description: 'Comprehensive audit trail for all Gold layer data processing activities'
+    columns:
+      - name: audit_id
+        description: 'Unique identifier for each audit record'
+        data_type: varchar(255)
+      - name: pipeline_run_id
+        description: 'Unique identifier for each pipeline execution run'
+        data_type: varchar(255)
+      - name: pipeline_name
+        description: 'Name of the data pipeline that was executed'
+        data_type: varchar(255)
+      - name: execution_start_time
+        description: 'Timestamp when the pipeline execution began'
+        data_type: timestamp_ntz
+      - name: execution_end_time
+        description: 'Timestamp when the pipeline execution completed'
+        data_type: timestamp_ntz
+      - name: execution_status
+        description: 'Final status of pipeline execution'
+        data_type: varchar(50)
+      - name: target_table
+        description: 'Target table where processed data was loaded'
+        data_type: varchar(255)
+        
+  - name: go_user_dimension
+    description: 'Gold layer dimension table for user profile information with historical tracking'
+    columns:
+      - name: user_dimension_id
+        description: 'Unique identifier for each user dimension record'
+        data_type: varchar(255)
+      - name: user_id
+        description: 'Unique identifier for each user record from silver layer'
+        data_type: varchar(255)
+      - name: email_address
+        description: 'Primary email address associated with the user account'
+        data_type: varchar(255)
+      - name: user_full_name
+        description: 'Display name or username for the platform user'
+        data_type: varchar(255)
+      - name: plan_type_code
+        description: 'Subscription plan tier assigned to the user'
+        data_type: varchar(50)
+        
+  - name: go_time_dimension
+    description: 'Gold layer dimension table for comprehensive time-based attributes'
+    columns:
+      - name: time_dimension_id
+        description: 'Unique identifier for each time dimension record'
+        data_type: varchar(255)
+      - name: date_key
+        description: 'Primary date key for joining with fact tables'
+        data_type: number
+      - name: full_date
+        description: 'Full date value'
+        data_type: date
+        
+  - name: go_license_dimension
+    description: 'Gold layer dimension table for license type and entitlement information'
+    columns:
+      - name: license_dimension_id
+        description: 'Unique identifier for each license dimension record'
+        data_type: varchar(255)
+      - name: license_id
+        description: 'Unique identifier for each license record from silver layer'
+        data_type: varchar(255)
+        
+  - name: go_meeting_facts
+    description: 'Gold layer fact table capturing meeting performance metrics'
+    columns:
+      - name: meeting_fact_id
+        description: 'Unique identifier for each meeting fact record'
+        data_type: varchar(255)
+      - name: meeting_id
+        description: 'Unique identifier for each meeting record from silver layer'
+        data_type: varchar(255)
+      - name: duration_minutes
+        description: 'Total duration of the meeting measured in minutes'
+        data_type: number
+        
+  - name: go_webinar_facts
+    description: 'Gold layer fact table for webinar performance metrics'
+    columns:
+      - name: webinar_fact_id
+        description: 'Unique identifier for each webinar fact record'
+        data_type: varchar(255)
+      - name: webinar_id
+        description: 'Unique identifier for each webinar record from silver layer'
+        data_type: varchar(255)
+        
+  - name: go_participant_facts
+    description: 'Gold layer fact table for individual participant engagement metrics'
+    columns:
+      - name: participant_fact_id
+        description: 'Unique identifier for each participant fact record'
+        data_type: varchar(255)
+      - name: participant_id
+        description: 'Unique identifier for each participant record from silver layer'
+        data_type: varchar(255)
+        
+  - name: go_usage_facts
+    description: 'Gold layer fact table for platform feature usage metrics'
+    columns:
+      - name: usage_fact_id
+        description: 'Unique identifier for each usage fact record'
+        data_type: varchar(255)
+      - name: feature_usage_id
+        description: 'Unique identifier for each feature usage record from silver layer'
+        data_type: varchar(255)
+        
+  - name: go_financial_facts
+    description: 'Gold layer fact table for billing events and financial metrics'
+    columns:
+      - name: financial_fact_id
+        description: 'Unique identifier for each financial fact record'
+        data_type: varchar(255)
+      - name: billing_event_id
+        description: 'Unique identifier for each billing event record from silver layer'
+        data_type: varchar(255)
