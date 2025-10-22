@@ -5,8 +5,13 @@
 -- Time Dimension Generation for 5 years (2020-2025)
 WITH date_spine AS (
     SELECT 
-        DATEADD('day', ROW_NUMBER() OVER (ORDER BY 1) - 1, '2020-01-01'::DATE) AS date_value
+        DATEADD('day', (ROW_NUMBER() OVER (ORDER BY SEQ4()) - 1), '2020-01-01'::DATE) AS date_value
     FROM TABLE(GENERATOR(ROWCOUNT => 2191)) -- 6 years of dates
+),
+
+filtered_dates AS (
+    SELECT date_value
+    FROM date_spine
     WHERE date_value <= '2025-12-31'
 ),
 
@@ -36,7 +41,7 @@ time_attributes AS (
             WHEN MONTH(date_value) IN (10, 11, 12) THEN 3
             ELSE 4
         END AS fiscal_quarter
-    FROM date_spine
+    FROM filtered_dates
 )
 
 SELECT 
