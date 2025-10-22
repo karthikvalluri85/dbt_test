@@ -1,0 +1,73 @@
+{{ config(
+    materialized='table',
+    pre_hook="INSERT INTO {{ this.schema }}.go_process_audit (audit_id, pipeline_run_id, pipeline_name, execution_start_time, execution_status, source_system, target_table, load_date) SELECT UUID_STRING(), '{{ invocation_id }}', 'go_process_audit_creation', CURRENT_TIMESTAMP(), 'STARTED', 'DBT', 'go_process_audit', CURRENT_DATE() WHERE NOT EXISTS (SELECT 1 FROM {{ this.schema }}.go_process_audit WHERE pipeline_run_id = '{{ invocation_id }}' AND target_table = 'go_process_audit')",
+    post_hook="UPDATE {{ this.schema }}.go_process_audit SET execution_end_time = CURRENT_TIMESTAMP(), execution_status = 'SUCCESS', execution_duration_seconds = DATEDIFF('second', execution_start_time, CURRENT_TIMESTAMP()), update_date = CURRENT_DATE() WHERE pipeline_run_id = '{{ invocation_id }}' AND target_table = 'go_process_audit'"
+) }}
+
+-- Process Audit Table Creation
+WITH audit_structure AS (
+    SELECT 
+        UUID_STRING() AS audit_id,
+        '{{ invocation_id }}' AS pipeline_run_id,
+        'INITIAL_SETUP' AS pipeline_name,
+        'AUDIT' AS pipeline_type,
+        CURRENT_TIMESTAMP() AS execution_start_time,
+        CURRENT_TIMESTAMP() AS execution_end_time,
+        0 AS execution_duration_seconds,
+        'SUCCESS' AS execution_status,
+        1 AS records_processed,
+        1 AS records_inserted,
+        0 AS records_updated,
+        0 AS records_deleted,
+        0 AS records_rejected,
+        'DBT' AS source_system,
+        'ZOOM_SILVER_SCHEMA' AS source_tables,
+        'go_process_audit' AS target_table,
+        0 AS error_count,
+        0 AS warning_count,
+        100.00 AS data_quality_score,
+        0.01 AS data_volume_mb,
+        0.00 AS cpu_usage_percent,
+        1.00 AS memory_usage_mb,
+        '1.0.0' AS pipeline_version,
+        MD5('initial_config') AS configuration_hash,
+        'DBT_SYSTEM' AS executed_by,
+        'PRODUCTION' AS execution_environment,
+        CURRENT_DATE() AS business_date,
+        0 AS data_freshness_hours,
+        CURRENT_DATE() AS load_date,
+        CURRENT_DATE() AS update_date
+)
+
+SELECT 
+    audit_id,
+    pipeline_run_id,
+    pipeline_name,
+    pipeline_type,
+    execution_start_time,
+    execution_end_time,
+    execution_duration_seconds,
+    execution_status,
+    records_processed,
+    records_inserted,
+    records_updated,
+    records_deleted,
+    records_rejected,
+    source_system,
+    source_tables,
+    target_table,
+    error_count,
+    warning_count,
+    data_quality_score,
+    data_volume_mb,
+    cpu_usage_percent,
+    memory_usage_mb,
+    pipeline_version,
+    configuration_hash,
+    executed_by,
+    execution_environment,
+    business_date,
+    data_freshness_hours,
+    load_date,
+    update_date
+FROM audit_structure
